@@ -1,0 +1,8 @@
+<resources>
+    <color name="system_bg_dark">#0B0813</color>
+    <color name="system_purple_neon">#A855F7</color>
+    <color name="system_magenta_border">#D946EF</color>
+    <color name="system_cyan">#38BDF8</color>
+    <color name="system_hp_red">#EF4444</color>
+    <color name="system_white">#FFFFFF</color>
+</resources>

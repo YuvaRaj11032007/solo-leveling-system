@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.SoloLevelingSystem" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">#0B0813</item>
+        <item name="android:navigationBarColor">#0B0813</item>
+        <item name="android:windowBackground">#0B0813</item>
+    </style>
+</resources>

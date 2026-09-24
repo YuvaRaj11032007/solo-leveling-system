@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Solo Leveling: System</string>
+    <string name="daily_quest_notification_title">Daily Quest Arrived: Preparing to become strong</string>
+    <string name="daily_quest_notification_body">Complete your daily physical training before midnight to avoid the Penalty Quest!</string>
+    <string name="penalty_warning_notification_title">⚠️ PENALTY QUEST IMMINENT</string>
+    <string name="penalty_warning_notification_body">Only 2 hours remain! Unfinished daily quests will transport you to the Penalty Zone.</string>
+</resources>
