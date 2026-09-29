@@ -6,6 +6,7 @@ import com.sololeveling.system.data.db.entities.GateQuestEntity
 import com.sololeveling.system.data.db.entities.InventoryItemEntity
 import com.sololeveling.system.data.db.entities.SkillEntity
 import com.sololeveling.system.data.db.entities.UserEntity
+import com.sololeveling.system.data.gemini.GeminiService
 import kotlinx.coroutines.flow.Flow
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -26,17 +27,17 @@ class SystemRepository(private val db: AppDatabase) {
             val initialUser = UserEntity(
                 id = 1,
                 isAwakened = false,
-                name = "SUNG JIN-WOO",
-                title = "E-RANK HUNTER (EVOLVING)",
+                name = "OPERATOR",
+                title = "TIER-E CANDIDATE (DISCIPLINE BASELINE)",
                 rank = "E-Rank",
                 level = 1,
                 currentExp = 0,
                 maxExp = 100,
                 currentHp = 100,
                 maxHp = 100,
-                currentMp = 40,
-                maxMp = 40,
-                fatigue = 5,
+                currentMp = 50,
+                maxMp = 50,
+                fatigue = 0,
                 maxFatigue = 100,
                 strength = 10,
                 agility = 10,
@@ -48,7 +49,9 @@ class SystemRepository(private val db: AppDatabase) {
                 alarmHour = 7,
                 alarmMinute = 0,
                 alarmEnabled = true,
-                penaltyWarningEnabled = true
+                penaltyWarningEnabled = true,
+                geminiApiKey = GeminiService.DEFAULT_API_KEY,
+                streakDays = 1
             )
             db.userDao().insertUser(initialUser)
         }
@@ -62,7 +65,7 @@ class SystemRepository(private val db: AppDatabase) {
             val newQuest = DailyQuestEntity(
                 id = 1,
                 questDate = todayStr,
-                questName = "DAILY TRAINING: PREPARATION TO BECOME STRONG",
+                questName = "DAILY DISCIPLINE PROTOCOL: HUMAN PERFORMANCE OPTIMIZATION",
                 pushupsCurrent = 0,
                 pushupsTarget = targets.pushups,
                 situpsCurrent = 0,
@@ -71,6 +74,12 @@ class SystemRepository(private val db: AppDatabase) {
                 squatsTarget = targets.squats,
                 stepsCurrent = 0,
                 stepsTarget = targets.steps,
+                waterCurrentMl = 0,
+                waterTargetMl = targets.waterMl,
+                deepWorkCurrentMins = 0,
+                deepWorkTargetMins = targets.deepWorkMins,
+                readingCurrentMins = 0,
+                readingTargetMins = targets.readingMins,
                 isCompleted = false,
                 isRewardClaimed = false,
                 deadlineMillis = getMidnightMillis()
@@ -78,115 +87,115 @@ class SystemRepository(private val db: AppDatabase) {
             db.questDao().insertOrUpdateDailyQuest(newQuest)
         }
 
-        // Initialize Gates
-        val currentGates = db.questDao().getGateById(1)
-        if (currentGates == null) {
-            val initialGates = listOf(
+        // Initialize Realistic High-Performance Challenge Operations (Replacing Fantasy Gates)
+        val currentGate = db.questDao().getGateById(1)
+        if (currentGate == null) {
+            val initialOperations = listOf(
                 GateQuestEntity(
                     id = 1,
-                    gateRank = "D-Rank",
-                    title = "[OPTIONAL: GATE CLEARANCE]",
-                    description = "D-Rank Dungeon: Goblin Den in Gwanak-gu. Exterminate goblin vanguard.",
-                    enemyName = "Hobgoblin Chieftain",
+                    gateRank = "Tier-D",
+                    title = "OPERATION: 5KM AEROBIC THRESHOLD",
+                    description = "Cardiovascular capacity sprint. Maintain steady aerobic cadence to elevate VO2 max and stamina density.",
+                    enemyName = "5,000 Continuous Strides",
                     enemyHp = 100,
                     enemyMaxHp = 100,
-                    workoutObjective = "25 Jumping Jacks + 25 High Knees",
+                    workoutObjective = "5,000 Paces + 30 High Knees",
                     expReward = 350,
                     goldReward = 2500L,
-                    itemRewardName = "Kasaka's Poison Fang",
+                    itemRewardName = "Carbon-Plated Pace Racers",
                     isCleared = false,
                     isAvailable = true
                 ),
                 GateQuestEntity(
                     id = 2,
-                    gateRank = "C-Rank",
-                    title = "C-Rank Gate: Cerberus' Lair",
-                    description = "Infernal dungeon entrance. Gate of the Underworld Watchdog.",
-                    enemyName = "Three-Headed Cerberus",
+                    gateRank = "Tier-C",
+                    title = "OPERATION: 90-MIN DEEP WORK SPRINT",
+                    description = "Zero-distraction cognitive sprint. Total smartphone severance and uninterrupted high-leverage execution.",
+                    enemyName = "90 Minutes Pure Focus",
                     enemyHp = 250,
                     enemyMaxHp = 250,
-                    workoutObjective = "40 Mountain Climbers + 30 Lunges",
+                    workoutObjective = "Complete 2x 45-Min Pomodoro Blocks",
                     expReward = 750,
                     goldReward = 6000L,
-                    itemRewardName = "Demon Monarch's Ring",
+                    itemRewardName = "Active Acoustic Focus Headphones",
                     isCleared = false,
                     isAvailable = true
                 ),
                 GateQuestEntity(
                     id = 3,
-                    gateRank = "B-Rank",
-                    title = "B-Rank Gate: Ice Elf Kingdom",
-                    description = "Blizzard covered cavern dominated by Baruka's white phantom warriors.",
-                    enemyName = "Ice Elf Baruka",
+                    gateRank = "Tier-B",
+                    title = "OPERATION: COLD RESILIENCE & BREATHWORK",
+                    description = "Autonomic nervous system recalibration. Cold thermogenesis coupled with cyclic physiological sighing.",
+                    enemyName = "Vagal Nerve Recalibration",
                     enemyHp = 500,
                     enemyMaxHp = 500,
-                    workoutObjective = "50 Jump Squats + 35 Burpees",
+                    workoutObjective = "3-Min Cold Exposure + 10-Min Box Breathing",
                     expReward = 1500,
                     goldReward = 15000L,
-                    itemRewardName = "Baruka's Dagger",
+                    itemRewardName = "Bio-Optic Blue Blocking Lens",
                     isCleared = false,
                     isAvailable = false
                 ),
                 GateQuestEntity(
                     id = 4,
-                    gateRank = "Red Gate",
-                    title = "Red Gate: Shadow Monarch Throne",
-                    description = "An isolated high-dimensional rupture. Complete severance from reality.",
-                    enemyName = "Blood-Red Commander Igris",
+                    gateRank = "Tier-A",
+                    title = "OPERATION: CENTURY CALISTHENICS CIRCUIT",
+                    description = "Elite neuromuscular conditioning. Total upper and lower body calisthenic volume gauntlet.",
+                    enemyName = "100 Strict Pull/Push/Squat Cycle",
                     enemyHp = 1000,
                     enemyMaxHp = 1000,
-                    workoutObjective = "100 Push-ups + 100 Sit-ups in 1 Session",
+                    workoutObjective = "100 Push-ups + 100 Squats + 50 Core Leg Lifts",
                     expReward = 5000,
                     goldReward = 50000L,
-                    itemRewardName = "Ruler's Authority Core",
+                    itemRewardName = "Weighted Calisthenics Harness (+10kg)",
                     isCleared = false,
                     isAvailable = false
                 )
             )
-            db.questDao().insertGates(initialGates)
+            db.questDao().insertGates(initialOperations)
         }
 
-        // Initialize Inventory Items
+        // Initialize Realistic High-Performance Gear & Consumables
         val item1 = db.inventoryDao().getItemById("item_elixir")
         if (item1 == null) {
             val defaultItems = listOf(
                 InventoryItemEntity(
                     id = "item_elixir",
-                    name = "Full Recovery Elixir",
-                    category = "POTION",
-                    rarity = "RARE",
-                    description = "Instantly clears all player fatigue, restores HP to 100% and MP to 100%.",
-                    statBonus = "+100% HP/MP, -100 Fatigue",
+                    name = "Electrolyte & Mineral Matrix",
+                    category = "RECOVERY",
+                    rarity = "ELITE",
+                    description = "Optimal bioavailable sodium, potassium, and magnesium salts. Instantly resets physiological fatigue.",
+                    statBonus = "+100% Stamina & Full Mental Clarity",
                     quantity = 3,
                     isEquipped = false
                 ),
                 InventoryItemEntity(
-                    id = "item_teleport",
-                    name = "Dungeon Return Stone",
-                    category = "KEY",
-                    rarity = "EPIC",
-                    description = "Allows an instant emergency escape from any dungeon or penalty zone.",
-                    statBonus = "Instant Teleport",
-                    quantity = 1,
-                    isEquipped = false
-                ),
-                InventoryItemEntity(
-                    id = "item_kasaka_dagger",
-                    name = "Kasaka's Poison Fang",
-                    category = "WEAPON",
-                    rarity = "RARE",
-                    description = "A dagger crafted from the venomous fang of the Great Swamp Snake Kasaka.",
-                    statBonus = "+25 ATK, +5 AGI (Paralysis Effect)",
+                    id = "item_headphones",
+                    name = "Acoustic Noise-Cancelling Pro",
+                    category = "FOCUS",
+                    rarity = "ELITE",
+                    description = "High-fidelity isolation shielding auditory channels from ambient distraction.",
+                    statBonus = "+20% Deep Work Focus & +10 INT",
                     quantity = 1,
                     isEquipped = true
                 ),
                 InventoryItemEntity(
-                    id = "item_demon_key",
-                    name = "Demon Castle Entry Key",
-                    category = "KEY",
-                    rarity = "MYTHIC",
-                    description = "Unlocks the 100-floor Demon King Baran tower dungeon.",
-                    statBonus = "Special Raid Access",
+                    id = "item_vest",
+                    name = "Weighted Calisthenics Vest (+10kg)",
+                    category = "GEAR",
+                    rarity = "PRO",
+                    description = "Ergonomic iron-sand vest engineered for progressive calisthenic overload.",
+                    statBonus = "+15 STR & +10 VIT Progression",
+                    quantity = 1,
+                    isEquipped = false
+                ),
+                InventoryItemEntity(
+                    id = "item_journal",
+                    name = "Stoic Retrospective Journal",
+                    category = "TOOL",
+                    rarity = "PINNACLE",
+                    description = "Handbound habit architecture journal for evening audits, cognitive defusion, and goal alignment.",
+                    statBonus = "+10 PER & Dopamine Baseline Reset",
                     quantity = 1,
                     isEquipped = false
                 )
@@ -194,57 +203,57 @@ class SystemRepository(private val db: AppDatabase) {
             db.inventoryDao().insertItems(defaultItems)
         }
 
-        // Initialize Skills
-        val skill1 = db.skillDao().getSkillById("skill_sprint")
+        // Initialize Realistic Habit & Performance Protocols (Skills)
+        val skill1 = db.skillDao().getSkillById("skill_flow_state")
         if (skill1 == null) {
             val defaultSkills = listOf(
                 SkillEntity(
-                    id = "skill_sprint",
-                    name = "Sprint (疾走)",
+                    id = "skill_flow_state",
+                    name = "Hyperfocus Flow State",
                     type = "ACTIVE",
-                    mpCost = 5,
+                    mpCost = 10,
                     level = 1,
-                    description = "Movement speed and step tracking efficiency increased by 30%.",
+                    description = "Enters a high-gamma frequency cognitive trance. Blocks external micro-distractions for 45 minutes.",
                     cooldownSeconds = 15,
                     isUnlocked = true
                 ),
                 SkillEntity(
-                    id = "skill_bloodlust",
-                    name = "Bloodlust (殺氣)",
+                    id = "skill_box_breathing",
+                    name = "Physiological Sigh & Vagal Reset",
                     type = "ACTIVE",
-                    mpCost = 15,
+                    mpCost = 5,
                     level = 1,
-                    description = "Intimidates nearby targets, weakening enemy combat power by 20%.",
+                    description = "Two rapid inhales followed by prolonged exhale. Instantly dumps 25 fatigue points and lowers cortisol.",
                     cooldownSeconds = 30,
                     isUnlocked = true
                 ),
                 SkillEntity(
-                    id = "skill_stealth",
-                    name = "Stealth (隱身)",
+                    id = "skill_cold_shock",
+                    name = "Cold Thermogenesis Shock",
                     type = "ACTIVE",
-                    mpCost = 25,
+                    mpCost = 15,
                     level = 1,
-                    description = "Conceals presence and aura entirely from ordinary senses.",
+                    description = "3-minute cold immersion triggering sustained norepinephrine and a 250% baseline dopamine elevation.",
                     cooldownSeconds = 60,
                     isUnlocked = false
                 ),
                 SkillEntity(
-                    id = "skill_rulers_authority",
-                    name = "Ruler's Authority (支配者の権能)",
-                    type = "ACTIVE",
-                    mpCost = 35,
+                    id = "skill_intermittent_fasting",
+                    name = "16:8 Metabolic Autophagy",
+                    type = "PASSIVE",
+                    mpCost = 0,
                     level = 1,
-                    description = "Telekinetic control over physical objects without physical contact.",
-                    cooldownSeconds = 45,
-                    isUnlocked = false
+                    description = "Periodic nutrient withholding prompting mitochondrial repair, ketone production, and sharp mental clarity.",
+                    cooldownSeconds = 0,
+                    isUnlocked = true
                 ),
                 SkillEntity(
-                    id = "skill_shadow_extraction",
-                    name = "Shadow Extraction: ARISE (起きろ)",
-                    type = "ULTIMATE",
-                    mpCost = 50,
+                    id = "skill_circadian_lock",
+                    name = "Circadian Sleep Lock",
+                    type = "PROTOCOL",
+                    mpCost = 25,
                     level = 1,
-                    description = "Extracts shadows from fallen enemies and recruits them as permanent loyal shadow soldiers.",
+                    description = "Strict darkness protocol and temperature reduction. Guarantees 90+ minutes of deep slow-wave REM sleep.",
                     cooldownSeconds = 120,
                     isUnlocked = false
                 )
@@ -253,41 +262,46 @@ class SystemRepository(private val db: AppDatabase) {
         }
     }
 
-    data class WorkoutTargets(
+    data class RealisticTargets(
         val pushups: Int,
         val situps: Int,
         val squats: Int,
-        val steps: Int
+        val steps: Int,
+        val waterMl: Int,
+        val deepWorkMins: Int,
+        val readingMins: Int
     )
 
-    fun calculateTargetsForRankAndLevel(rank: String, level: Int): WorkoutTargets {
+    fun calculateTargetsForRankAndLevel(rank: String, level: Int): RealisticTargets {
         val base = when (rank) {
-            "E-Rank" -> WorkoutTargets(20, 20, 20, 3000)
-            "D-Rank" -> WorkoutTargets(35, 35, 35, 5000)
-            "C-Rank" -> WorkoutTargets(50, 50, 50, 7000)
-            "B-Rank" -> WorkoutTargets(75, 75, 75, 8500)
-            "A-Rank" -> WorkoutTargets(90, 90, 90, 9500)
-            "S-Rank" -> WorkoutTargets(100, 100, 100, 10000)
-            else -> WorkoutTargets(25, 25, 25, 4000)
+            "E-Rank" -> RealisticTargets(20, 20, 20, 4000, 2500, 45, 15)
+            "D-Rank" -> RealisticTargets(35, 35, 35, 6000, 2800, 60, 20)
+            "C-Rank" -> RealisticTargets(50, 50, 50, 8000, 3000, 75, 25)
+            "B-Rank" -> RealisticTargets(70, 70, 70, 10000, 3200, 90, 30)
+            "A-Rank" -> RealisticTargets(85, 85, 85, 12000, 3500, 105, 35)
+            "S-Rank" -> RealisticTargets(100, 100, 100, 14000, 4000, 120, 45)
+            else -> RealisticTargets(25, 25, 25, 5000, 2500, 45, 15)
         }
-        // Dynamic Scaling based on Level
-        val levelMultiplier = (level - 1) * 3
-        val stepMultiplier = (level - 1) * 200
-        return WorkoutTargets(
-            pushups = minOf(150, base.pushups + levelMultiplier),
-            situps = minOf(150, base.situps + levelMultiplier),
-            squats = minOf(150, base.squats + levelMultiplier),
-            steps = minOf(20000, base.steps + stepMultiplier)
+        val levelMul = (level - 1) * 2
+        val stepMul = (level - 1) * 150
+        return RealisticTargets(
+            pushups = minOf(150, base.pushups + levelMul),
+            situps = minOf(150, base.situps + levelMul),
+            squats = minOf(150, base.squats + levelMul),
+            steps = minOf(20000, base.steps + stepMul),
+            waterMl = base.waterMl,
+            deepWorkMins = minOf(180, base.deepWorkMins + (level - 1) * 5),
+            readingMins = minOf(60, base.readingMins + (level - 1) * 2)
         )
     }
 
     suspend fun completeAwakeningAssessment(
         hunterName: String,
-        pushupScore: Int,    // 0 to 3
-        situpScore: Int,     // 0 to 3
-        squatScore: Int,     // 0 to 3
-        cardioScore: Int,    // 0 to 3
-        focusStat: String    // "STR", "AGI", "VIT", "INT", "BALANCED"
+        pushupScore: Int,
+        situpScore: Int,
+        squatScore: Int,
+        cardioScore: Int,
+        focusStat: String
     ) {
         val totalFitnessPoints = pushupScore + situpScore + squatScore + cardioScore
         val assignedRank = when {
@@ -300,13 +314,13 @@ class SystemRepository(private val db: AppDatabase) {
         }
 
         val rankTitle = when (assignedRank) {
-            "E-Rank" -> "E-RANK HUNTER (EVOLVING)"
-            "D-Rank" -> "D-RANK HUNTER (ASPIRANT)"
-            "C-Rank" -> "C-RANK HUNTER (RAID CAPTAIN)"
-            "B-Rank" -> "B-RANK HUNTER (STRIKE LEADER)"
-            "A-Rank" -> "A-RANK HUNTER (ELITE WARRIOR)"
-            "S-Rank" -> "S-RANK HUNTER (NATIONAL LEVEL)"
-            else -> "HUNTER CANDIDATE"
+            "E-Rank" -> "TIER-E: EVOLVING ASPIRANT"
+            "D-Rank" -> "TIER-D: DISCIPLINE PRACTITIONER"
+            "C-Rank" -> "TIER-C: HIGH-PERFORMANCE OPERATOR"
+            "B-Rank" -> "TIER-B: PROTOCOL LEADER"
+            "A-Rank" -> "TIER-A: ELITE BIO-HACKER"
+            "S-Rank" -> "TIER-S: PINNACLE HUMAN"
+            else -> "DISCIPLINE CANDIDATE"
         }
 
         var str = 10 + (pushupScore * 3)
@@ -328,7 +342,7 @@ class SystemRepository(private val db: AppDatabase) {
         val updatedUser = UserEntity(
             id = 1,
             isAwakened = true,
-            name = if (hunterName.isNotBlank()) hunterName.trim().uppercase() else "SUNG JIN-WOO",
+            name = if (hunterName.isNotBlank()) hunterName.trim().uppercase() else "OPERATOR",
             title = rankTitle,
             rank = assignedRank,
             level = 1,
@@ -336,8 +350,8 @@ class SystemRepository(private val db: AppDatabase) {
             maxExp = 100,
             currentHp = 100 + (vit * 2),
             maxHp = 100 + (vit * 2),
-            currentMp = 40 + (intStat * 2),
-            maxMp = 40 + (intStat * 2),
+            currentMp = 50 + (intStat * 2),
+            maxMp = 50 + (intStat * 2),
             fatigue = 0,
             maxFatigue = 100,
             strength = str,
@@ -350,16 +364,17 @@ class SystemRepository(private val db: AppDatabase) {
             alarmHour = 7,
             alarmMinute = 0,
             alarmEnabled = true,
-            penaltyWarningEnabled = true
+            penaltyWarningEnabled = true,
+            geminiApiKey = GeminiService.DEFAULT_API_KEY,
+            streakDays = 1
         )
         db.userDao().insertUser(updatedUser)
 
-        // Generate tailored daily quest according to computed rank
         val targets = calculateTargetsForRankAndLevel(assignedRank, 1)
         val newQuest = DailyQuestEntity(
             id = 1,
             questDate = getTodayDateString(),
-            questName = "DAILY TRAINING: PREPARATION TO BECOME STRONG",
+            questName = "DAILY DISCIPLINE PROTOCOL: HUMAN PERFORMANCE OPTIMIZATION",
             pushupsCurrent = 0,
             pushupsTarget = targets.pushups,
             situpsCurrent = 0,
@@ -368,6 +383,12 @@ class SystemRepository(private val db: AppDatabase) {
             squatsTarget = targets.squats,
             stepsCurrent = 0,
             stepsTarget = targets.steps,
+            waterCurrentMl = 0,
+            waterTargetMl = targets.waterMl,
+            deepWorkCurrentMins = 0,
+            deepWorkTargetMins = targets.deepWorkMins,
+            readingCurrentMins = 0,
+            readingTargetMins = targets.readingMins,
             isCompleted = false,
             isRewardClaimed = false,
             deadlineMillis = getMidnightMillis()
@@ -394,12 +415,29 @@ class SystemRepository(private val db: AppDatabase) {
         checkQuestCompletionStatus()
     }
 
+    suspend fun addWater(ml: Int) {
+        db.questDao().addWater(ml)
+        checkQuestCompletionStatus()
+    }
+
+    suspend fun addDeepWork(minutes: Int) {
+        db.questDao().addDeepWork(minutes)
+        checkQuestCompletionStatus()
+    }
+
+    suspend fun addReading(minutes: Int) {
+        db.questDao().addReading(minutes)
+        checkQuestCompletionStatus()
+    }
+
     private suspend fun checkQuestCompletionStatus() {
         val quest = db.questDao().getDailyQuest() ?: return
         val isAllCompleted = quest.pushupsCurrent >= quest.pushupsTarget &&
                 quest.situpsCurrent >= quest.situpsTarget &&
                 quest.squatsCurrent >= quest.squatsTarget &&
-                quest.stepsCurrent >= quest.stepsTarget
+                quest.stepsCurrent >= quest.stepsTarget &&
+                quest.waterCurrentMl >= quest.waterTargetMl &&
+                quest.deepWorkCurrentMins >= quest.deepWorkTargetMins
 
         if (isAllCompleted && !quest.isCompleted) {
             db.questDao().updateDailyQuest(quest.copy(isCompleted = true))
@@ -411,8 +449,8 @@ class SystemRepository(private val db: AppDatabase) {
         if (!quest.isCompleted || quest.isRewardClaimed) return false
 
         val user = db.userDao().getUser() ?: return false
-        val expGained = 150 * user.level
-        val goldGained = 2000L * user.level
+        val expGained = 200 * user.level
+        val goldGained = 2500L * user.level
 
         var newExp = user.currentExp + expGained
         var newLevel = user.level
@@ -421,7 +459,6 @@ class SystemRepository(private val db: AppDatabase) {
         var newMaxMp = user.maxMp
         var newPoints = user.unallocatedPoints
 
-        // Level up checks
         while (newExp >= newMaxExp) {
             newExp -= newMaxExp
             newLevel += 1
@@ -431,7 +468,6 @@ class SystemRepository(private val db: AppDatabase) {
             newPoints += 3
         }
 
-        // Full recovery on quest completion like anime
         val updatedUser = user.copy(
             level = newLevel,
             currentExp = newExp,
@@ -442,12 +478,12 @@ class SystemRepository(private val db: AppDatabase) {
             maxMp = newMaxMp,
             fatigue = 0,
             unallocatedPoints = newPoints,
-            gold = user.gold + goldGained
+            gold = user.gold + goldGained,
+            streakDays = user.streakDays + 1
         )
         db.userDao().updateUser(updatedUser)
         db.questDao().updateDailyQuest(quest.copy(isRewardClaimed = true))
 
-        // Check if gate 3 or 4 should unlock
         if (newLevel >= 5) {
             db.questDao().getGateById(3)?.let {
                 if (!it.isAvailable) db.questDao().updateGate(it.copy(isAvailable = true))
@@ -473,7 +509,7 @@ class SystemRepository(private val db: AppDatabase) {
     }
 
     suspend fun useInventoryItem(item: InventoryItemEntity): Boolean {
-        if (item.category == "POTION") {
+        if (item.category == "RECOVERY") {
             db.userDao().fullRecovery()
             if (item.quantity <= 1) {
                 db.inventoryDao().deleteItem(item.id)
@@ -481,19 +517,19 @@ class SystemRepository(private val db: AppDatabase) {
                 db.inventoryDao().updateItem(item.copy(quantity = item.quantity - 1))
             }
             return true
-        } else if (item.category == "WEAPON") {
+        } else if (item.category == "GEAR" || item.category == "FOCUS") {
             db.inventoryDao().updateItem(item.copy(isEquipped = !item.isEquipped))
             return true
         }
         return false
     }
 
-    suspend fun completeGateRaid(gateId: Int): Boolean {
-        val gate = db.questDao().getGateById(gateId) ?: return false
+    suspend fun completeChallengeOperation(operationId: Int): Boolean {
+        val op = db.questDao().getGateById(operationId) ?: return false
         val user = db.userDao().getUser() ?: return false
 
-        val expGained = gate.expReward
-        val goldGained = gate.goldReward
+        val expGained = op.expReward
+        val goldGained = op.goldReward
 
         var newExp = user.currentExp + expGained
         var newLevel = user.level
@@ -515,15 +551,18 @@ class SystemRepository(private val db: AppDatabase) {
             level = newLevel,
             currentExp = newExp,
             maxExp = newMaxExp,
-            currentHp = maxOf(10, user.currentHp - 25),
-            fatigue = minOf(100, user.fatigue + 20),
             unallocatedPoints = newPoints,
             gold = user.gold + goldGained
         )
         db.userDao().updateUser(updatedUser)
-        db.questDao().updateGate(gate.copy(isCleared = true))
+        db.questDao().updateGate(op.copy(isCleared = true))
 
         return true
+    }
+
+    suspend fun updateApiKey(newKey: String) {
+        val user = db.userDao().getUser() ?: return
+        db.userDao().updateUser(user.copy(geminiApiKey = newKey))
     }
 
     suspend fun updateAlarmSettings(hour: Int, minute: Int, enabled: Boolean, penaltyWarning: Boolean) {

@@ -16,10 +16,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bedtime
 import androidx.compose.material.icons.filled.Bolt
-import androidx.compose.material.icons.filled.FlashOn
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.Whatshot
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.Psychology
+import androidx.compose.material.icons.filled.SelfImprovement
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,13 +60,20 @@ fun SkillsScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "SKILL COMMAND HUD",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Black,
-                letterSpacing = 1.2.sp,
-                color = TextWhite
-            )
+            Column {
+                Text(
+                    text = "MASTERY PROTOCOLS",
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = 1.2.sp,
+                    color = TextWhite
+                )
+                Text(
+                    text = "Bio-Hacking & Mental Endurance Framework",
+                    fontSize = 10.sp,
+                    color = TextPurpleMuted
+                )
+            }
 
             Box(
                 modifier = Modifier
@@ -75,8 +83,8 @@ fun SkillsScreen(
                     .padding(horizontal = 10.dp, vertical = 4.dp)
             ) {
                 Text(
-                    text = "MP: $currentMp",
-                    fontSize = 12.sp,
+                    text = "FOCUS: $currentMp",
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.Black,
                     color = NeonCyan
                 )
@@ -96,7 +104,7 @@ fun SkillsScreen(
             }
 
             item {
-                Spacer(modifier = Modifier.height(70.dp))
+                Spacer(modifier = Modifier.height(72.dp))
             }
         }
     }
@@ -109,16 +117,17 @@ private fun SkillRow(
     onActivate: () -> Unit
 ) {
     val typeColor = when (skill.type) {
-        "ULTIMATE" -> GlowingMagenta
+        "PROTOCOL" -> GlowingMagenta
         "ACTIVE" -> NeonCyan
         else -> NeonPurpleLight
     }
 
     val iconVector = when {
-        skill.id.contains("shadow") -> Icons.Default.Whatshot
-        skill.id.contains("stealth") -> Icons.Default.Visibility
-        skill.id.contains("bloodlust") -> Icons.Default.Bolt
-        else -> Icons.Default.FlashOn
+        skill.id.contains("circadian") || skill.id.contains("sleep") -> Icons.Default.Bedtime
+        skill.id.contains("box") || skill.id.contains("sigh") -> Icons.Default.SelfImprovement
+        skill.id.contains("flow") || skill.id.contains("focus") -> Icons.Default.Psychology
+        skill.id.contains("cold") -> Icons.Default.Bolt
+        else -> Icons.Default.FitnessCenter
     }
 
     BeveledHudCard(
@@ -155,20 +164,20 @@ private fun SkillRow(
                 ) {
                     Text(
                         text = skill.name,
-                        fontSize = 13.sp,
+                        fontSize = 12.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = TextWhite
                     )
                     Text(
-                        text = "LV.${skill.level}",
-                        fontSize = 10.sp,
+                        text = "RANK ${skill.level}",
+                        fontSize = 9.sp,
                         fontWeight = FontWeight.Bold,
                         color = GlowingMagenta
                     )
                 }
 
                 Text(
-                    text = "MP COST: ${skill.mpCost}  |  ${skill.type}",
+                    text = if (skill.mpCost > 0) "FOCUS COST: ${skill.mpCost}  |  ${skill.type}" else "PASSIVE PROTOCOL",
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
                     color = NeonCyan,
@@ -179,15 +188,15 @@ private fun SkillRow(
                     text = skill.description,
                     fontSize = 10.sp,
                     color = TextPurpleMuted,
-                    lineHeight = 14.sp
+                    lineHeight = 13.sp
                 )
             }
 
             NeonActionButton(
-                text = if (!skill.isUnlocked) "[ LOCKED ]" else "[ CAST ]",
+                text = if (!skill.isUnlocked) "[ LOCKED ]" else "[ INITIATE ]",
                 onClick = onActivate,
                 enabled = canCast,
-                padding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 6.dp),
+                padding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 5.dp),
                 accentColor = if (skill.isUnlocked) GlowingMagenta else Color.Gray
             )
         }

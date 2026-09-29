@@ -30,7 +30,6 @@ import com.sololeveling.system.ui.theme.GlowingMagenta
 import com.sololeveling.system.ui.theme.GoldYellow
 import com.sololeveling.system.ui.theme.NeonCyan
 import com.sololeveling.system.ui.theme.NeonPurpleDark
-import com.sololeveling.system.ui.theme.NeonPurpleLight
 import com.sololeveling.system.ui.theme.TextMuted
 import com.sololeveling.system.ui.theme.TextPurpleMuted
 import com.sololeveling.system.ui.theme.TextWhite
@@ -44,8 +43,8 @@ fun GateClearanceCard(
     if (gate == null) return
 
     val rankColor = when (gate.gateRank) {
-        "D-Rank" -> GateBlueRank
-        "C-Rank", "B-Rank" -> GatePurpleRank
+        "Tier-D" -> GateBlueRank
+        "Tier-C", "Tier-B" -> GatePurpleRank
         else -> GateRedRank
     }
 
@@ -58,15 +57,14 @@ fun GateClearanceCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Header with Rank badge
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "[OPTIONAL: GATE CLEARANCE]",
-                    fontSize = 12.sp,
+                    text = "[HIGH-PERFORMANCE OPERATION]",
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.Black,
                     letterSpacing = 0.8.sp,
                     color = GlowingMagenta
@@ -104,7 +102,6 @@ fun GateClearanceCard(
                 modifier = Modifier.padding(top = 2.dp, bottom = 8.dp)
             )
 
-            // Objective & Location Box
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -116,7 +113,7 @@ fun GateClearanceCard(
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Row {
                         Text(
-                            text = "OBJECTIVE: ",
+                            text = "PROTOCOL: ",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
                             color = NeonCyan
@@ -131,13 +128,13 @@ fun GateClearanceCard(
 
                     Row {
                         Text(
-                            text = "COORDINATES: ",
+                            text = "TARGET: ",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
                             color = TextMuted
                         )
                         Text(
-                            text = "37.4782° N, 126.9516° E (Gwanak Dungeon Gate)",
+                            text = gate.enemyName,
                             fontSize = 10.sp,
                             color = TextPurpleMuted
                         )
@@ -147,7 +144,6 @@ fun GateClearanceCard(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Rewards & [ BEGIN GATE ] Button
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -161,7 +157,7 @@ fun GateClearanceCard(
                         color = TextMuted
                     )
                     Text(
-                        text = "+${gate.expReward} EXP  |  +${gate.goldReward} GOLD",
+                        text = "+${gate.expReward} EXP  |  +${gate.goldReward} CREDITS",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = GoldYellow
@@ -169,7 +165,7 @@ fun GateClearanceCard(
                 }
 
                 NeonActionButton(
-                    text = if (gate.isCleared) "[ CLEARED ]" else "[ BEGIN GATE ]",
+                    text = if (gate.isCleared) "[ COMPLETED ]" else "[ BEGIN OPERATION ]",
                     onClick = { onBeginGate(gate) },
                     enabled = !gate.isCleared && gate.isAvailable,
                     accentColor = if (gate.isCleared) Color.Gray else NeonCyan

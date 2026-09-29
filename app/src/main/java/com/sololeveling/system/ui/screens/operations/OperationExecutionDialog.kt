@@ -1,6 +1,8 @@
-package com.sololeveling.system.ui.screens.dungeon
+package com.sololeveling.system.ui.screens.operations
 
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -38,17 +40,15 @@ import com.sololeveling.system.ui.theme.NeonPurpleDark
 import com.sololeveling.system.ui.theme.TextMuted
 import com.sololeveling.system.ui.theme.TextPurpleMuted
 import com.sololeveling.system.ui.theme.TextWhite
-import com.sololeveling.system.ui.theme.VitalityHpRed
-import com.sololeveling.system.ui.theme.VitalityHpRedDark
 
 @Composable
-fun GateBattleDialog(
-    gate: GateQuestEntity,
+fun OperationExecutionDialog(
+    operation: GateQuestEntity,
     onDismiss: () -> Unit,
-    onRaidVictory: (Int) -> Unit
+    onOperationComplete: (Int) -> Unit
 ) {
-    var bossCurrentHp by remember { mutableIntStateOf(gate.enemyHp) }
-    val isDefeated = bossCurrentHp <= 0
+    var remainingQuota by remember { mutableIntStateOf(operation.enemyHp) }
+    val isCompleted = remainingQuota <= 0
 
     Dialog(onDismissRequest = onDismiss) {
         BeveledHudCard(
@@ -67,13 +67,13 @@ fun GateBattleDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "[ DUNGEON BOSS RAID ]",
-                        fontSize = 12.sp,
+                        text = "[ HIGH-PERFORMANCE OPERATION ]",
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.Black,
                         color = GlowingMagenta
                     )
                     Text(
-                        text = gate.gateRank,
+                        text = operation.gateRank,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = NeonCyan
@@ -83,49 +83,68 @@ fun GateBattleDialog(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    text = "BOSS: ${gate.enemyName.uppercase()}",
-                    fontSize = 16.sp,
+                    text = operation.title,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Black,
                     color = TextWhite
                 )
 
                 Text(
-                    text = gate.description,
+                    text = operation.description,
                     fontSize = 11.sp,
                     color = TextPurpleMuted,
                     modifier = Modifier.padding(top = 2.dp, bottom = 12.dp)
                 )
 
-                // Boss HP Bar
-                val progress = if (gate.enemyMaxHp > 0) (bossCurrentHp.toFloat() / gate.enemyMaxHp).coerceIn(0f, 1f) else 0f
-                val animatedProgress by animateFloatAsState(targetValue = progress, label = "boss_hp")
-
-                val hpShape = CutCornerShape(4.dp)
-                Text(
-                    text = "BOSS HP: $bossCurrentHp / ${gate.enemyMaxHp}",
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = VitalityHpRed
+                // Operation Progress Bar
+                val progress = if (operation.enemyMaxHp > 0) {
+                    ((operation.enemyMaxHp - remainingQuota).toFloat() / operation.enemyMaxHp).coerceIn(0f, 1f)
+                } else 1f
+                val animatedProgress by animateFloatAsState(
+                    targetValue = progress,
+                    animationSpec = tween(400, easing = FastOutSlowInEasing),
+                    label = "op_progress"
                 )
+
+                val barShape = CutCornerShape(4.dp)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "TARGET: ${operation.enemyName.uppercase()}",
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = NeonCyan
+                    )
+                    Text(
+                        text = "${(progress * 100).toInt()}%",
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Black,
+                        color = GoldYellow
+                    )
+                }
+
                 Box(
                     modifier = Modifier
+                        .padding(top = 4.dp)
                         .fillMaxWidth()
                         .height(14.dp)
-                        .clip(hpShape)
-                        .background(Color(0xFF220A10))
-                        .border(1.dp, VitalityHpRedDark, hpShape)
+                        .clip(barShape)
+                        .background(Color(0xFF0F0B1E))
+                        .border(1.dp, NeonPurpleDark, barShape)
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
                             .fillMaxWidth(animatedProgress)
-                            .background(Brush.horizontalGradient(listOf(VitalityHpRedDark, VitalityHpRed)))
+                            .background(Brush.horizontalGradient(listOf(NeonPurpleDark, NeonCyan, GlowingMagenta)))
                     )
                 }
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // Workout Combat Objective Box
+                // Tactical Protocol Requirements Box
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -136,20 +155,20 @@ fun GateBattleDialog(
                 ) {
                     Column {
                         Text(
-                            text = "PHYSICAL TRIAL REQUIREMENT:",
+                            text = "EXECUTION PROTOCOL:",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
                             color = GlowingMagenta
                         )
                         Text(
-                            text = gate.workoutObjective,
+                            text = operation.workoutObjective,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.ExtraBold,
                             color = TextWhite,
                             modifier = Modifier.padding(top = 2.dp)
                         )
                         Text(
-                            text = "Execute physical movement reps to strike and deplete boss health!",
+                            text = "Perform this real-world discipline block. Log milestones to complete operation.",
                             fontSize = 10.sp,
                             color = TextMuted,
                             modifier = Modifier.padding(top = 4.dp)
@@ -159,24 +178,24 @@ fun GateBattleDialog(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Actions
-                if (!isDefeated) {
+                // Interactive Buttons
+                if (!isCompleted) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         NeonActionButton(
-                            text = "[ STRIKE (-25 HP) ]",
+                            text = "[ LOG SET (-25%) ]",
                             onClick = {
-                                bossCurrentHp = maxOf(0, bossCurrentHp - 25)
+                                remainingQuota = maxOf(0, remainingQuota - (operation.enemyMaxHp / 4).coerceAtLeast(1))
                             },
                             modifier = Modifier.weight(1f),
-                            accentColor = VitalityHpRed
+                            accentColor = NeonCyan
                         )
                         NeonActionButton(
-                            text = "[ RETREAT ]",
+                            text = "[ CLOSE ]",
                             onClick = onDismiss,
-                            modifier = Modifier.weight(0.7f),
+                            modifier = Modifier.weight(0.6f),
                             accentColor = Color.Gray
                         )
                     }
@@ -186,23 +205,23 @@ fun GateBattleDialog(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "★ DUNGEON BOSS SLAIN! ★",
+                            text = "★ OPERATION COMPLETE! ★",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Black,
                             color = GoldYellow,
                             modifier = Modifier.padding(bottom = 6.dp)
                         )
                         Text(
-                            text = "REWARDS: +${gate.expReward} EXP  |  +${gate.goldReward} GOLD\nLOOT: ${gate.itemRewardName}",
+                            text = "AWARDS: +${operation.expReward} EXP  |  +${operation.goldReward} CREDITS\nGEAR UNLOCKED: ${operation.itemRewardName}",
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             color = TextWhite,
                             modifier = Modifier.padding(bottom = 12.dp)
                         )
                         NeonActionButton(
-                            text = "[ CLAIM DUNGEON LOOT ]",
+                            text = "[ RECORD OPERATIONAL VICTORY ]",
                             onClick = {
-                                onRaidVictory(gate.id)
+                                onOperationComplete(operation.id)
                                 onDismiss()
                             },
                             modifier = Modifier.fillMaxWidth(),

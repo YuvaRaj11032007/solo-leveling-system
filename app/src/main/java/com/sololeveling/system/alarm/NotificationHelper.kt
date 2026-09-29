@@ -26,35 +26,32 @@ object NotificationHelper {
             val notificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            // Daily Quests Channel
             val dailyChannel = NotificationChannel(
                 CHANNEL_DAILY_QUEST,
-                "Daily Quests & Awakening",
+                "Daily Discipline & Protocols",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "High-priority anime notifications for incoming daily workout quests"
+                description = "High-priority notifications for daily calisthenics, hydration & deep work protocols"
                 enableVibration(true)
                 vibrationPattern = longArrayOf(0, 250, 150, 250)
             }
 
-            // Penalty Warning Channel
             val penaltyChannel = NotificationChannel(
                 CHANNEL_PENALTY_WARNING,
-                "Penalty Quest Warnings",
+                "Discipline Warning Radar",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Critical alert before midnight when daily quests remain incomplete"
+                description = "Critical alert before midnight when daily protocols remain incomplete"
                 enableVibration(true)
                 vibrationPattern = longArrayOf(0, 500, 200, 500, 200, 500)
             }
 
-            // General System Channel
             val systemChannel = NotificationChannel(
                 CHANNEL_SYSTEM_ALERTS,
                 "System Achievements & Level Up",
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = "Level up announcements and item drop alerts"
+                description = "Level up announcements and operational milestone alerts"
             }
 
             notificationManager.createNotificationChannel(dailyChannel)
@@ -76,11 +73,11 @@ object NotificationHelper {
 
         val notification = NotificationCompat.Builder(context, CHANNEL_DAILY_QUEST)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("⚔️ [QUEST ARRIVED: DAILY TRAINING]")
-            .setContentText("Physical preparation to become strong is now active! Complete before midnight.")
+            .setContentTitle("⚡ [SYSTEM PROTOCOL: DAILY PERFORMANCE]")
+            .setContentText("Physical & Cognitive protocols are now active! Complete before midnight.")
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                    .bigText("[QUEST: DAILY TRAINING]\n• Push-ups\n• Sit-ups\n• Squats\n• Running / Steps\n\n⚠️ Warning: Incomplete daily quests will transport the Player to the Penalty Zone!")
+                    .bigText("[DAILY PERFORMANCE PROTOCOLS]\n• Calisthenics (Push-ups / Squats / Core)\n• Aerobic Movement & Paces\n• Optimal Hydration (3,000 ml)\n• Deep Cognitive Focus & Reading\n\nMaintain discipline. Strive for baseline excellence.")
             )
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
@@ -108,11 +105,11 @@ object NotificationHelper {
 
         val notification = NotificationCompat.Builder(context, CHANNEL_PENALTY_WARNING)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("🚨 [WARNING: PENALTY QUEST IMMINENT]")
-            .setContentText("Less than 2 hours remaining! Complete your daily workout immediately!")
+            .setContentTitle("🚨 [WARNING: PROTOCOL DEADLINE APPROACHING]")
+            .setContentText("Less than 2 hours remaining! Finish your daily discipline targets immediately.")
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                    .bigText("[SYSTEM ALERT]\nPlayer has not completed today's daily quest.\nFailure to comply before midnight will result in immediate penalty quest dispatch: [SURVIVE IN THE CENTIPEDE DESERT FOR 4 HOURS].")
+                    .bigText("[SYSTEM DISCIPLINE RADAR]\nOperator has pending daily protocols.\nUncompleted tasks at midnight trigger [DISCIPLINE DEFICIT: +25% volume penalty tomorrow and streak reset]. Execute now.")
             )
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
@@ -138,11 +135,11 @@ object NotificationHelper {
 
         val notification = NotificationCompat.Builder(context, CHANNEL_SYSTEM_ALERTS)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("👑 [SYSTEM: LEVEL UP!]")
-            .setContentText("Congratulations Player! You have reached LEVEL $newLevel!")
+            .setContentTitle("👑 [SYSTEM: OPERATOR LEVEL UP!]")
+            .setContentText("Congratulations Operator! You have reached LEVEL $newLevel!")
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                    .bigText("Level Up achieved!\nMax HP and Max MP increased.\n+3 Unallocated Stat Points have been deposited into your status window.")
+                    .bigText("Performance Level Up achieved!\nMax Stamina and Cognitive Bandwidth increased.\n+3 Attribute Points available for distribution.")
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)

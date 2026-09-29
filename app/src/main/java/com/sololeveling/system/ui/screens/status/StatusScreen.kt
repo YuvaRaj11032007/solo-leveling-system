@@ -28,16 +28,13 @@ import com.sololeveling.system.ui.components.BeveledHudCard
 import com.sololeveling.system.ui.components.FatigueGauge
 import com.sololeveling.system.ui.components.HpGauge
 import com.sololeveling.system.ui.components.MpGauge
-import com.sololeveling.system.ui.components.NeonActionButton
 import com.sololeveling.system.ui.components.ShadowHunterAvatar
 import com.sololeveling.system.ui.components.StatAllocationButton
 import com.sololeveling.system.ui.theme.GlowingMagenta
 import com.sololeveling.system.ui.theme.GoldYellow
 import com.sololeveling.system.ui.theme.NeonCyan
-import com.sololeveling.system.ui.theme.NeonPurpleDark
 import com.sololeveling.system.ui.theme.NeonPurpleLight
 import com.sololeveling.system.ui.theme.TextMuted
-import com.sololeveling.system.ui.theme.TextPurpleMuted
 import com.sololeveling.system.ui.theme.TextWhite
 
 @Composable
@@ -55,10 +52,9 @@ fun StatusScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Status Window Header
         Text(
-            text = "STATUS WINDOW",
-            fontSize = 18.sp,
+            text = "BIOLOGICAL & COGNITIVE STATUS",
+            fontSize = 17.sp,
             fontWeight = FontWeight.Black,
             letterSpacing = 1.2.sp,
             color = TextWhite
@@ -86,7 +82,7 @@ fun StatusScreen(
                             color = TextWhite
                         )
                         Text(
-                            text = "JOB: SHADOW MONARCH (EVOLVING)",
+                            text = "CLASS: HIGH-PERFORMANCE OPERATOR",
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             color = GlowingMagenta
@@ -119,8 +115,8 @@ fun StatusScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "CURRENT GOLD:", fontSize = 11.sp, color = TextMuted)
-                    Text(text = "${user.gold} G", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = GoldYellow)
+                    Text(text = "MERIT CREDITS:", fontSize = 11.sp, color = TextMuted)
+                    Text(text = "${user.gold} CREDITS", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = GoldYellow)
                 }
             }
         }
@@ -138,14 +134,13 @@ fun StatusScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "[ ATTRIBUTES & STATS ]",
+                        text = "[ PERFORMANCE ATTRIBUTES ]",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Black,
                         letterSpacing = 0.8.sp,
                         color = GlowingMagenta
                     )
 
-                    // Unallocated Points Badge
                     Box(
                         modifier = Modifier
                             .clip(CutCornerShape(4.dp))
@@ -166,15 +161,15 @@ fun StatusScreen(
 
                 val hasPoints = user.unallocatedPoints > 0
 
-                StatRow("STRENGTH (STR)", user.strength, hasPoints) { onAllocateStat("STR") }
-                StatRow("AGILITY (AGI)", user.agility, hasPoints) { onAllocateStat("AGI") }
-                StatRow("VITALITY (VIT)", user.vitality, hasPoints) { onAllocateStat("VIT") }
-                StatRow("INTELLIGENCE (INT)", user.intelligence, hasPoints) { onAllocateStat("INT") }
-                StatRow("PERCEPTION (PER)", user.perception, hasPoints) { onAllocateStat("PER") }
+                StatRow("STRENGTH (Physical Calisthenics & Power)", user.strength, hasPoints) { onAllocateStat("STR") }
+                StatRow("AGILITY (Cardio, Pace & VO2 Max)", user.agility, hasPoints) { onAllocateStat("AGI") }
+                StatRow("VITALITY (Immunity, Sleep & Stamina)", user.vitality, hasPoints) { onAllocateStat("VIT") }
+                StatRow("INTELLIGENCE (Cognitive Focus & Deep Work)", user.intelligence, hasPoints) { onAllocateStat("INT") }
+                StatRow("DISCIPLINE (Habit Consistency & Willpower)", user.perception, hasPoints) { onAllocateStat("PER") }
 
                 if (user.unallocatedPoints > 0) {
                     Text(
-                        text = "※ Distribute available points to increase physical & magical powers.",
+                        text = "※ Allocate earned attribute points to expand physical and cognitive capacity.",
                         fontSize = 10.sp,
                         color = NeonCyan,
                         modifier = Modifier.padding(top = 10.dp)
@@ -183,7 +178,7 @@ fun StatusScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(70.dp))
+        Spacer(modifier = Modifier.height(72.dp))
     }
 }
 
@@ -203,9 +198,10 @@ private fun StatRow(
     ) {
         Text(
             text = statName,
-            fontSize = 12.sp,
+            fontSize = 11.sp,
             fontWeight = FontWeight.Bold,
-            color = TextWhite
+            color = TextWhite,
+            modifier = Modifier.weight(1f)
         )
 
         Row(

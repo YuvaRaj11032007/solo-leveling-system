@@ -2,7 +2,6 @@ package com.sololeveling.system.ui.screens.inventory
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,10 +16,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.Healing
-import androidx.compose.material.icons.filled.Key
-import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.Headphones
+import androidx.compose.material.icons.filled.LocalDrink
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,19 +55,25 @@ fun InventoryScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        // Header & Gold HUD Bar
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "INVENTORY",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Black,
-                letterSpacing = 1.2.sp,
-                color = TextWhite
-            )
+            Column {
+                Text(
+                    text = "GEAR & BIO-TOOLS",
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = 1.2.sp,
+                    color = TextWhite
+                )
+                Text(
+                    text = "High-Performance Equipment Matrix",
+                    fontSize = 10.sp,
+                    color = TextPurpleMuted
+                )
+            }
 
             Box(
                 modifier = Modifier
@@ -78,8 +83,8 @@ fun InventoryScreen(
                     .padding(horizontal = 10.dp, vertical = 4.dp)
             ) {
                 Text(
-                    text = "$gold G",
-                    fontSize = 12.sp,
+                    text = "$gold CREDITS",
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.Black,
                     color = GoldYellow
                 )
@@ -98,7 +103,7 @@ fun InventoryScreen(
             }
 
             item {
-                Spacer(modifier = Modifier.height(70.dp))
+                Spacer(modifier = Modifier.height(72.dp))
             }
         }
     }
@@ -110,18 +115,17 @@ private fun InventoryItemRow(
     onAction: () -> Unit
 ) {
     val rarityColor = when (item.rarity) {
-        "MYTHIC" -> Color(0xFFF43F5E)
-        "LEGENDARY" -> GoldYellow
-        "EPIC" -> GlowingMagenta
-        "RARE" -> NeonCyan
-        else -> Color.LightGray
+        "PINNACLE" -> Color(0xFFF43F5E)
+        "ELITE" -> GoldYellow
+        "PRO" -> GlowingMagenta
+        else -> NeonCyan
     }
 
     val iconVector = when (item.category) {
-        "POTION" -> Icons.Default.Healing
-        "KEY" -> Icons.Default.Key
-        "WEAPON" -> Icons.Default.Security
-        else -> Icons.Default.AutoAwesome
+        "RECOVERY" -> Icons.Default.LocalDrink
+        "FOCUS" -> Icons.Default.Headphones
+        "GEAR" -> Icons.Default.FitnessCenter
+        else -> Icons.Default.Build
     }
 
     BeveledHudCard(
@@ -135,7 +139,6 @@ private fun InventoryItemRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Item Icon Box
             Box(
                 modifier = Modifier
                     .size(46.dp)
@@ -152,7 +155,6 @@ private fun InventoryItemRow(
                 )
             }
 
-            // Item Details
             Column(modifier = Modifier.weight(1f)) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -160,14 +162,14 @@ private fun InventoryItemRow(
                 ) {
                     Text(
                         text = item.name,
-                        fontSize = 13.sp,
+                        fontSize = 12.sp,
                         fontWeight = FontWeight.ExtraBold,
                         color = TextWhite
                     )
                     if (item.quantity > 1) {
                         Text(
                             text = "x${item.quantity}",
-                            fontSize = 11.sp,
+                            fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
                             color = NeonPurpleLight
                         )
@@ -176,7 +178,7 @@ private fun InventoryItemRow(
 
                 Text(
                     text = item.statBonus,
-                    fontSize = 11.sp,
+                    fontSize = 10.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = NeonCyan,
                     modifier = Modifier.padding(vertical = 2.dp)
@@ -186,14 +188,13 @@ private fun InventoryItemRow(
                     text = item.description,
                     fontSize = 10.sp,
                     color = TextPurpleMuted,
-                    lineHeight = 14.sp
+                    lineHeight = 13.sp
                 )
             }
 
-            // Action Button
             val actionText = when (item.category) {
-                "POTION" -> "[ USE ]"
-                "WEAPON" -> if (item.isEquipped) "[ EQUIPPED ]" else "[ EQUIP ]"
+                "RECOVERY" -> "[ CONSUME ]"
+                "GEAR", "FOCUS" -> if (item.isEquipped) "[ EQUIPPED ]" else "[ EQUIP ]"
                 else -> "[ VIEW ]"
             }
 
@@ -201,7 +202,7 @@ private fun InventoryItemRow(
                 text = actionText,
                 onClick = onAction,
                 enabled = true,
-                padding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 6.dp),
+                padding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 5.dp),
                 accentColor = if (item.isEquipped) NeonCyan else GlowingMagenta
             )
         }

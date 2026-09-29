@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 data class InventoryItemEntity(
     @PrimaryKey val id: String,
     val name: String,
-    val category: String, // WEAPON, POTION, KEY, ARTIFACT
-    val rarity: String,   // COMMON, RARE, EPIC, LEGENDARY, MYTHIC
+    val category: String, // FOCUS, RECOVERY, GEAR, TOOL
+    val rarity: String,   // STANDARD, PRO, ELITE, PINNACLE
     val description: String,
     val statBonus: String,
     val quantity: Int = 1,

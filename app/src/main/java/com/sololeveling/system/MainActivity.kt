@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,21 +18,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import com.sololeveling.system.alarm.NotificationHelper
 import com.sololeveling.system.data.db.entities.GateQuestEntity
+import com.sololeveling.system.ui.components.CelebrationDialog
 import com.sololeveling.system.ui.components.HudBackground
 import com.sololeveling.system.ui.navigation.NavigationItem
 import com.sololeveling.system.ui.navigation.SystemBottomNavBar
-import com.sololeveling.system.ui.screens.dungeon.GateBattleDialog
+import com.sololeveling.system.ui.screens.gemini.GeminiScreen
 import com.sololeveling.system.ui.screens.home.HomeScreen
 import com.sololeveling.system.ui.screens.inventory.InventoryScreen
 import com.sololeveling.system.ui.screens.onboarding.AwakeningAssessmentScreen
+import com.sololeveling.system.ui.screens.operations.OperationExecutionDialog
+import com.sololeveling.system.ui.screens.operations.OperationsScreen
 import com.sololeveling.system.ui.screens.settings.AlarmSettingsDialog
-import com.sololeveling.system.ui.screens.skills.SkillsScreen
 import com.sololeveling.system.ui.screens.status.StatusScreen
 import com.sololeveling.system.ui.theme.SoloLevelingTheme
 import com.sololeveling.system.viewmodel.SystemViewModel
@@ -90,13 +90,15 @@ fun MainAppContent(viewModel: SystemViewModel) {
     val dailyQuest by viewModel.dailyQuest.collectAsState()
     val gates by viewModel.gates.collectAsState()
     val inventory by viewModel.inventory.collectAsState()
-    val skills by viewModel.skills.collectAsState()
+    val chatMessages by viewModel.chatMessages.collectAsState()
+    val isGeminiLoading by viewModel.isGeminiLoading.collectAsState()
 
     var currentRoute by remember { mutableStateOf(NavigationItem.HOME.route) }
 
     // Dialog States
-    var selectedGateForRaid by remember { mutableStateOf<GateQuestEntity?>(null) }
+    var selectedOperationForExecution by remember { mutableStateOf<GateQuestEntity?>(null) }
     var showAlarmSettings by remember { mutableStateOf(false) }
+    var showCelebrationDialog by remember { mutableStateOf(false) }
 
     // 1. Initial Assessment Check
     if (user != null && !user!!.isAwakened) {
@@ -136,14 +138,52 @@ fun MainAppContent(viewModel: SystemViewModel) {
                             onSimulateSteps = { steps ->
                                 viewModel.addSteps(steps)
                             },
+                            onAddWater = { ml ->
+                                viewModel.addWater(ml)
+                            },
+                            onAddDeepWork = { mins ->
+                                viewModel.addDeepWork(mins)
+                            },
+                            onAddReading = { mins ->
+                                viewModel.addReading(mins)
+                            },
                             onClaimRewards = {
                                 viewModel.claimRewards()
+                                showCelebrationDialog = true
                             },
-                            onBeginGate = { gate ->
-                                selectedGateForRaid = gate
+                            onBeginGate = { op ->
+                                selectedOperationForExecution = op
                             },
                             onOpenAlarmSettings = {
                                 showAlarmSettings = true
+                            },
+                            onNavigateToGemini = {
+                                currentRoute = NavigationItem.SYSTEM_AI.route
+                            }
+                        )
+                    }
+
+                    NavigationItem.SYSTEM_AI.route -> {
+                        GeminiScreen(
+                            messages = chatMessages,
+                            isLoading = isGeminiLoading,
+                            onSendMessage = { text ->
+                                viewModel.sendGeminiMessage(text)
+                            },
+                            onRequestDebrief = {
+                                viewModel.requestDailyDebrief()
+                            },
+                            onRequestCustomProtocol = { goal ->
+                                viewModel.requestCustomProtocol(goal)
+                            }
+                        )
+                    }
+
+                    NavigationItem.OPERATIONS.route -> {
+                        OperationsScreen(
+                            operations = gates,
+                            onBeginOperation = { op ->
+                                selectedOperationForExecution = op
                             }
                         )
                     }
@@ -166,32 +206,33 @@ fun MainAppContent(viewModel: SystemViewModel) {
                             }
                         )
                     }
-
-                    NavigationItem.SKILLS.route -> {
-                        SkillsScreen(
-                            skills = skills,
-                            currentMp = user?.currentMp ?: 0,
-                            onActivateSkill = { skill ->
-                                viewModel.activateSkill(skill)
-                            }
-                        )
-                    }
                 }
             }
         }
 
-        // Dungeon Raid Modal Dialog
-        selectedGateForRaid?.let { gate ->
-            GateBattleDialog(
-                gate = gate,
-                onDismiss = { selectedGateForRaid = null },
-                onRaidVictory = { gateId ->
-                    viewModel.completeGate(gateId)
+        // Realistic Operation Execution Modal Dialog
+        selectedOperationForExecution?.let { op ->
+            OperationExecutionDialog(
+                operation = op,
+                onDismiss = { selectedOperationForExecution = null },
+                onOperationComplete = { opId ->
+                    viewModel.completeOperation(opId)
                 }
             )
         }
 
-        // Alarm Settings Modal Dialog
+        // Celebration Modal on Claim Rewards / Level Up
+        if (showCelebrationDialog && user != null) {
+            val u = user!!
+            CelebrationDialog(
+                newLevel = u.level,
+                expGained = 200 * u.level,
+                goldGained = 2500L * u.level,
+                onDismiss = { showCelebrationDialog = false }
+            )
+        }
+
+        // Configuration & Alarm Settings Modal Dialog
         if (showAlarmSettings && user != null) {
             val u = user!!
             AlarmSettingsDialog(
@@ -199,9 +240,11 @@ fun MainAppContent(viewModel: SystemViewModel) {
                 initialMinute = u.alarmMinute,
                 initialAlarmEnabled = u.alarmEnabled,
                 initialPenaltyEnabled = u.penaltyWarningEnabled,
+                currentApiKey = u.geminiApiKey,
                 onDismiss = { showAlarmSettings = false },
-                onSave = { h, m, enabled, penalty ->
+                onSave = { h, m, enabled, penalty, key ->
                     viewModel.saveAlarmPreferences(h, m, enabled, penalty)
+                    viewModel.updateApiKey(key)
                 },
                 onTriggerTestDailyNotification = {
                     NotificationHelper.showDailyQuestNotification(viewModel.getApplication())

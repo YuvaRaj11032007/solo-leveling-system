@@ -105,7 +105,7 @@ fun SystemBottomNavBar(
                             indication = null,
                             onClick = { onNavigate(item.route) }
                         )
-                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box(

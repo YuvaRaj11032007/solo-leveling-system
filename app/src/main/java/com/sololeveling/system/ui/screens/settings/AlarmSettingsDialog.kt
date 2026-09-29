@@ -11,10 +11,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -45,8 +49,9 @@ fun AlarmSettingsDialog(
     initialMinute: Int,
     initialAlarmEnabled: Boolean,
     initialPenaltyEnabled: Boolean,
+    currentApiKey: String,
     onDismiss: () -> Unit,
-    onSave: (hour: Int, minute: Int, enabled: Boolean, penalty: Boolean) -> Unit,
+    onSave: (hour: Int, minute: Int, enabled: Boolean, penalty: Boolean, apiKey: String) -> Unit,
     onTriggerTestDailyNotification: () -> Unit,
     onTriggerTestPenaltyNotification: () -> Unit
 ) {
@@ -54,6 +59,7 @@ fun AlarmSettingsDialog(
     var minute by remember { mutableIntStateOf(initialMinute) }
     var alarmEnabled by remember { mutableStateOf(initialAlarmEnabled) }
     var penaltyEnabled by remember { mutableStateOf(initialPenaltyEnabled) }
+    var apiKey by remember { mutableStateOf(currentApiKey) }
 
     Dialog(onDismissRequest = onDismiss) {
         BeveledHudCard(
@@ -63,22 +69,51 @@ fun AlarmSettingsDialog(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
                     .padding(20.dp)
             ) {
                 Text(
-                    text = "[ SYSTEM NOTIFICATION HUD ]",
-                    fontSize = 12.sp,
+                    text = "[ SYSTEM CONFIGURATION HUD ]",
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.Black,
                     letterSpacing = 1.sp,
                     color = GlowingMagenta
                 )
 
                 Text(
-                    text = "DAILY ALARMS & PENALTY RADAR",
-                    fontSize = 16.sp,
+                    text = "ALARMS & GEMINI INTELLIGENCE",
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = TextWhite,
                     modifier = Modifier.padding(top = 4.dp, bottom = 14.dp)
+                )
+
+                // Gemini API Key Input
+                Text(
+                    text = "GEMINI INTELLIGENCE API KEY:",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = NeonCyan,
+                    letterSpacing = 0.6.sp,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                OutlinedTextField(
+                    value = apiKey,
+                    onValueChange = { apiKey = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
+                    singleLine = true,
+                    shape = CutCornerShape(4.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = TextWhite,
+                        unfocusedTextColor = TextWhite,
+                        focusedContainerColor = Color(0xFF140D24),
+                        unfocusedContainerColor = Color(0xFF10091C),
+                        focusedIndicatorColor = GlowingMagenta,
+                        unfocusedIndicatorColor = NeonPurpleDark
+                    )
                 )
 
                 // Daily Quest Alarm Toggle
@@ -90,7 +125,7 @@ fun AlarmSettingsDialog(
                     Column {
                         Text(
                             text = "Daily Quest Arrival Alarm",
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             color = TextWhite
                         )
@@ -113,9 +148,8 @@ fun AlarmSettingsDialog(
                     )
                 }
 
-                // Time adjustment controls
                 if (alarmEnabled) {
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -148,7 +182,7 @@ fun AlarmSettingsDialog(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 // Penalty Zone Heads-Up Warning Toggle
                 Row(
@@ -158,8 +192,8 @@ fun AlarmSettingsDialog(
                 ) {
                     Column {
                         Text(
-                            text = "Penalty Zone Warning (22:00)",
-                            fontSize = 13.sp,
+                            text = "Discipline Warning Radar (22:00)",
+                            fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             color = TextWhite
                         )
@@ -182,7 +216,7 @@ fun AlarmSettingsDialog(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
                 // Test notifications buttons
                 Text(
@@ -205,7 +239,7 @@ fun AlarmSettingsDialog(
                         accentColor = NeonCyan
                     )
                     NeonActionButton(
-                        text = "TEST PENALTY",
+                        text = "TEST WARNING",
                         onClick = onTriggerTestPenaltyNotification,
                         modifier = Modifier.weight(1f),
                         padding = androidx.compose.foundation.layout.PaddingValues(vertical = 8.dp),
@@ -215,11 +249,10 @@ fun AlarmSettingsDialog(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Save / Close
                 NeonActionButton(
-                    text = "[ SAVE PROTOCOL ]",
+                    text = "[ SAVE CONFIGURATION ]",
                     onClick = {
-                        onSave(hour, minute, alarmEnabled, penaltyEnabled)
+                        onSave(hour, minute, alarmEnabled, penaltyEnabled, apiKey)
                         onDismiss()
                     },
                     modifier = Modifier.fillMaxWidth(),

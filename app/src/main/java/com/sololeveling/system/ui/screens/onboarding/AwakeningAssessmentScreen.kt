@@ -474,12 +474,12 @@ private fun EvaluationResultStep(
 ) {
     val totalScore = pushupScore + situpScore + squatScore + cardioScore
     val (rank, rankTitle, initialPushups, initialSitups, initialSquats, initialSteps) = when {
-        totalScore <= 3 -> Tuple6("E-Rank", "E-RANK HUNTER (EVOLVING)", 20, 20, 20, 3000)
-        totalScore <= 6 -> Tuple6("D-Rank", "D-RANK HUNTER (ASPIRANT)", 35, 35, 35, 5000)
-        totalScore <= 8 -> Tuple6("C-Rank", "C-RANK HUNTER (RAID CAPTAIN)", 50, 50, 50, 7000)
-        totalScore <= 10 -> Tuple6("B-Rank", "B-RANK HUNTER (STRIKE LEADER)", 75, 75, 75, 8500)
-        totalScore <= 11 -> Tuple6("A-Rank", "A-RANK HUNTER (ELITE WARRIOR)", 90, 90, 90, 9500)
-        else -> Tuple6("S-Rank", "S-RANK HUNTER (NATIONAL LEVEL)", 100, 100, 100, 10000)
+        totalScore <= 3 -> Tuple6("E-Rank", "TIER-E: EVOLVING ASPIRANT", 20, 20, 20, 4000)
+        totalScore <= 6 -> Tuple6("D-Rank", "TIER-D: DISCIPLINE PRACTITIONER", 35, 35, 35, 6000)
+        totalScore <= 8 -> Tuple6("C-Rank", "TIER-C: HIGH-PERFORMANCE OPERATOR", 50, 50, 50, 8000)
+        totalScore <= 10 -> Tuple6("B-Rank", "TIER-B: PROTOCOL LEADER", 70, 70, 70, 10000)
+        totalScore <= 11 -> Tuple6("A-Rank", "TIER-A: ELITE BIO-HACKER", 85, 85, 85, 12000)
+        else -> Tuple6("S-Rank", "TIER-S: PINNACLE HUMAN", 100, 100, 100, 14000)
     }
 
     BeveledHudCard(
@@ -558,12 +558,14 @@ private fun EvaluationResultStep(
                         letterSpacing = 0.8.sp,
                         modifier = Modifier.padding(bottom = 6.dp)
                     )
-                    Text(text = "• Push-ups: $initialPushups reps / day", fontSize = 12.sp, color = TextWhite)
-                    Text(text = "• Sit-ups: $initialSitups reps / day", fontSize = 12.sp, color = TextWhite)
-                    Text(text = "• Squats: $initialSquats reps / day", fontSize = 12.sp, color = TextWhite)
-                    Text(text = "• Steps / Running: $initialSteps steps / day", fontSize = 12.sp, color = TextWhite)
+                    Text(text = "• Upper Body (Push-ups): $initialPushups reps / day", fontSize = 12.sp, color = TextWhite)
+                    Text(text = "• Core (Sit-ups): $initialSitups reps / day", fontSize = 12.sp, color = TextWhite)
+                    Text(text = "• Lower Body (Squats): $initialSquats reps / day", fontSize = 12.sp, color = TextWhite)
+                    Text(text = "• Aerobic Movement: $initialSteps steps / day", fontSize = 12.sp, color = TextWhite)
+                    Text(text = "• Optimal Hydration: 2,500 - 3,500 ml / day", fontSize = 12.sp, color = TextWhite)
+                    Text(text = "• Deep Cognitive Focus: 45 - 90 mins / day", fontSize = 12.sp, color = TextWhite)
                     Text(
-                        text = "※ Targets will dynamically scale upward as you level up!",
+                        text = "※ Protocols dynamically scale as you elevate your level!",
                         fontSize = 10.sp,
                         color = NeonCyan,
                         modifier = Modifier.padding(top = 4.dp)

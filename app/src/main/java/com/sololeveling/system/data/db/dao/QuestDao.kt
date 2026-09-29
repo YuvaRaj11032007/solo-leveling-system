@@ -38,7 +38,16 @@ interface QuestDao {
     @Query("UPDATE daily_quests SET stepsCurrent = MIN(stepsTarget, stepsCurrent + :steps) WHERE id = 1")
     suspend fun addSteps(steps: Int)
 
-    // Gate Quests
+    @Query("UPDATE daily_quests SET waterCurrentMl = MIN(waterTargetMl, waterCurrentMl + :ml) WHERE id = 1")
+    suspend fun addWater(ml: Int)
+
+    @Query("UPDATE daily_quests SET deepWorkCurrentMins = MIN(deepWorkTargetMins, deepWorkCurrentMins + :mins) WHERE id = 1")
+    suspend fun addDeepWork(mins: Int)
+
+    @Query("UPDATE daily_quests SET readingCurrentMins = MIN(readingTargetMins, readingCurrentMins + :mins) WHERE id = 1")
+    suspend fun addReading(mins: Int)
+
+    // Realistic Challenges / Operations (mapped from gate_quests table)
     @Query("SELECT * FROM gate_quests ORDER BY id ASC")
     fun getAllGatesFlow(): Flow<List<GateQuestEntity>>
 
