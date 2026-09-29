@@ -24,8 +24,8 @@ object GeminiService {
         }
     }
     private const val BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models"
-    private const val PRIMARY_MODEL = "gemini-1.5-flash"
-    private const val FALLBACK_MODEL = "gemini-2.0-flash"
+    private const val PRIMARY_MODEL = "gemini-3.8-flash"
+    private const val FALLBACK_MODEL = "gemini-1.5-flash"
 
     private const val SYSTEM_PROMPT = """
 You are "THE SYSTEM" — an omniscient, high-tech, hyper-realistic self-improvement and performance architecture inspired by the Solo Leveling System HUD, but adapted strictly for REAL-WORLD human mastery.

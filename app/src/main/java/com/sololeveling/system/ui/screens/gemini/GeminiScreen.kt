@@ -300,7 +300,7 @@ private fun GeminiCoreHeader() {
                             .padding(horizontal = 5.dp, vertical = 1.dp)
                     ) {
                         Text(
-                            text = "GEMINI ACTIVE",
+                            text = "GEMINI 3.8 FLASH",
                             fontSize = 8.sp,
                             fontWeight = FontWeight.Black,
                             color = Color(0xFF34D399)

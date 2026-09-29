@@ -104,7 +104,7 @@ fun HomeScreen(
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "THE SYSTEM ARCHITECT // GEMINI ONLINE",
+                        text = "THE SYSTEM ARCHITECT // GEMINI 3.8 FLASH",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Black,
                         letterSpacing = 0.8.sp,

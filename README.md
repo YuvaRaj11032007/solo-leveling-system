@@ -9,7 +9,7 @@ The app strips away fantasy dungeons and monsters, replacing them with **real-li
 ## 🔮 What's New: The Realistic Transformation
 
 ### 1. 🧠 Gemini Intelligence Hub ("THE SYSTEM ARCHITECT")
-Powered by Google's Gemini models with direct REST integration:
+Powered by Google's **Gemini 3.8 Flash** with direct REST integration:
 - **Interactive System AI Coach:** Consult the System Architect anytime for form feedback, custom protocols, metabolic recovery, or motivation.
 - **Dynamic AI Quests:** Generate personalized real-world protocols for any objective (e.g., "90-Min Focus Sprint", "VO2 Max Running Intervals", "Clean Nutrition Reset").
 - **Daily Performance Debrief:** End-of-day AI evaluation rating consistency, analyzing adherence, and generating customized sleep and recovery directives.
